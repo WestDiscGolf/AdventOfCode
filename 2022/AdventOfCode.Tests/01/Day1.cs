@@ -19,30 +19,41 @@ public class Day1
         var rawLines = raw.Split(Environment.NewLine);
      */
 
+    //public int Execute(string filename)
+    //{
+    //    var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\01\\{filename}");
+    //    var items = raw.SplitOnNewLine();
+
+    //    int calories = 0;
+    //    List<int> elfs = new List<int>();
+    //    foreach (var item in items)
+    //    {
+    //        if (item.Length > 0)
+    //        {
+    //            calories += int.Parse(item);
+    //        }
+
+    //        if (string.IsNullOrWhiteSpace(item))
+    //        {
+    //            // start a new one
+    //            elfs.Add(calories);
+    //            calories = 0;
+    //        }
+    //    }
+
+    //    return elfs.Max();
+    //}
+
     public int Execute(string filename)
     {
         var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\01\\{filename}");
-        var items = raw.SplitOnNewLine();
-
-        int calories = 0;
-        List<int> elfs = new List<int>();
-        foreach (var item in items)
-        {
-            if (item.Length > 0)
-            {
-                calories += int.Parse(item);
-            }
-
-            if (string.IsNullOrWhiteSpace(item))
-            {
-                // start a new one
-                elfs.Add(calories);
-                calories = 0;
-            }
-        }
-
-        return elfs.Max();
+        var elfsCalories = raw.SplitOnDoubleNewLine();
+        var grouped = elfsCalories.Select(x => x.SplitOnNewLine());
+        var totals = grouped.Select(x => x.Select(int.Parse));
+        var totalled = totals.Select(x => x.Sum());
+        return totalled.Max();
     }
+
 
     public int Execute2(string filename)
     {
