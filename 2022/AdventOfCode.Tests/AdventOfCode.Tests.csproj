@@ -13,6 +13,8 @@
     <None Remove="01\Input01.txt" />
     <None Remove="02\Example.txt" />
     <None Remove="02\Input01.txt" />
+    <None Remove="03\Example.txt" />
+    <None Remove="03\Input01.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +28,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="02\Input01.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="03\Example.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="03\Input01.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
