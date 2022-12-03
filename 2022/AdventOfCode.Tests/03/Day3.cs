@@ -13,7 +13,7 @@ public class Day3
 
         var commonChars = next.Select(x => x.left.Intersect(x.right).FirstOrDefault());
 
-        var calculated = commonChars.Select(x => Convert(x));
+        var calculated = commonChars.Select(Convert);
         
         return calculated.Sum();
     }
@@ -25,17 +25,12 @@ public class Day3
 
         var grouped = rucksacks.Chunk(3);
 
-        int result = 0;
-
-        foreach (var group in grouped)
-        {
-            var i = group.Select(x => x).Cast<IEnumerable<char>>()
-                .Aggregate((l1, l2) => l1.Intersect(l2)).FirstOrDefault();
-
-            result += Convert(i);
-        }
-
-        return result;
+        return grouped.Select(group => group.Select(x => x)
+                .Cast<IEnumerable<char>>()
+                .Aggregate((l1, l2) => l1.Intersect(l2))
+                .FirstOrDefault())
+            .Select(Convert)
+            .Sum();
     }
 
     [Theory]
