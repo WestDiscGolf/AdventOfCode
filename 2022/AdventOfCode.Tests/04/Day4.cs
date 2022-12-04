@@ -41,8 +41,26 @@ public class Day4
     public int Execute2(string filename)
     {
         var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\04\\{filename}");
-        
-        return 0;
+
+        var rows = raw.SplitOnNewLine();
+        var pairs = rows.Select(x =>
+        {
+            var items = x.Split(',');
+            return (items[0], items[1]);
+        });
+
+        var i = pairs.Select(x =>
+        {
+            var left = x.Item1.SplitOn('-', int.Parse);
+            var right = x.Item2.SplitOn('-', int.Parse);
+
+            var leftRange = new Range(left.x, left.y);
+            var rightRange = new Range(right.x, right.y);
+
+            return leftRange.Overlaps(rightRange);
+        }).ToList();
+
+        return i.Count(x => x);
     }
 
     [Theory]
@@ -60,8 +78,8 @@ public class Day4
     }
 
     [Theory]
-    [InlineData("Example.txt", 70)]
-    //[InlineData("Input01.txt", 2817)]
+    [InlineData("Example.txt", 4)]
+    [InlineData("Input01.txt", 876)]
     public void Run2(string file, int answer)
     {
         // Arrange
