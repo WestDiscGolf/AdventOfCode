@@ -35,7 +35,7 @@ public class Day6
                 q.Dequeue();
 
                 // any duplicates?
-                if (!AnyDuplicates(q))
+                if (!AnyDuplicates(q, 4))
                 {
                     count = index;
                     break;
@@ -46,19 +46,49 @@ public class Day6
         return count;
     }
 
-    public bool AnyDuplicates(Queue<char> q)
+    public bool AnyDuplicates(Queue<char> q, int count)
     {
-        char[] copy = new char[4];
+        char[] copy = new char[count];
         q.CopyTo(copy, 0);
         var hash = new HashSet<char>(copy);
-        return hash.Count < 4;
+        return hash.Count < count;
     }
 
-    public string Execute2(string filename)
+    public int Execute2(string input)
     {
-        var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\06\\{filename}");
+        if (input.EndsWith("txt"))
+        {
+            input = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\06\\{input}");
+        }
 
-        return "";
+        int count = 0;
+
+        Queue<char> q = new();
+
+        foreach ((char c, int index) in input.Select((x, i) => (x, i + 1))) // work with 1 based!
+        {
+            if (index <= 14)
+            {
+                q.Enqueue(c);
+            }
+            else
+            {
+                // add the next one
+                q.Enqueue(c);
+
+                // get rid of the last one
+                q.Dequeue();
+
+                // any duplicates?
+                if (!AnyDuplicates(q, 14))
+                {
+                    count = index;
+                    break;
+                }
+            }
+        }
+
+        return count;
     }
 
     [Theory]
@@ -79,14 +109,17 @@ public class Day6
     }
 
     [Theory]
-    [InlineData("Example.txt", "")]
-    [InlineData("Input01.txt", "")]
-    public void Run2(string file, string answer)
+    [InlineData("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 19)]
+    [InlineData("bvwbjplbgvbhsrlpgdmjqwftvncz", 23)]
+    [InlineData("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 29)]
+    [InlineData("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 26)]
+    [InlineData("Input01.txt", 2665)]
+    public void Run2(string input, int answer)
     {
         // Arrange
 
         // Act
-        var result = Execute2(file);
+        var result = Execute2(input);
 
         // Assert
         result.Should().Be(answer);
