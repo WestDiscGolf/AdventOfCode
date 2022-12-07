@@ -14,6 +14,10 @@ public record ElfDirectory(string Name) : FileSystem;
 
 public record Command(string Cmd, string Args = "");
 
+/// <summary>
+/// Inspired by https://stackoverflow.com/a/10442244/33116
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class TreeNode<T>
 {
     private readonly List<TreeNode<T>> _children = new();
