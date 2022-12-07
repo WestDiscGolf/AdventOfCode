@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Schema;
+﻿using System.Collections.ObjectModel;
 using FluentAssertions;
 
 namespace AdventOfCode.Tests._07;
@@ -78,7 +70,7 @@ public class TreeNode<T>
 
 public class Day7
 {
-    public int Execute(string filename)
+    public (int, int) Execute(string filename)
     {
         var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\07\\{filename}");
 
@@ -132,8 +124,19 @@ public class Day7
         });
 
         var dirsOver100000 = root.Flatten().Where(x => x is ElfDirectory dir && dir.Size <= 100_000).ToList();
-        
-        return dirsOver100000.Select(x => x.Size).Sum();
+
+        var hdd_size = 70_000_000;
+        var rootsize = root.Value.Size;
+
+        var unused = hdd_size - rootsize; // should be 21_618_835
+
+        var required = 30_000_000 - unused;
+
+        var itemsWhichAreBigger = root.Flatten().Where(x => x is ElfDirectory dir && dir.Size >= required).ToList();
+
+        var min = itemsWhichAreBigger.Min(x => x.Size);
+
+        return (dirsOver100000.Select(x => x.Size).Sum(), min);
     }
 
     private ElfFile CreateFile(string input) => new(input.SplitBySpace()[1]){ Size = int.Parse(input.SplitBySpace()[0])};
@@ -156,7 +159,21 @@ public class Day7
         // Arrange
 
         // Act
-        var result = Execute(file);
+        var (result, _) = Execute(file);
+
+        // Assert
+        result.Should().Be(answer);
+    }
+
+    [Theory]
+    [InlineData("Example.txt", 24933642)]
+    [InlineData("Input01.txt", 0)]
+    public void Run2(string file, int answer)
+    {
+        // Arrange
+
+        // Act
+        var (_, result) = Execute(file);
 
         // Assert
         result.Should().Be(answer);
@@ -221,29 +238,5 @@ public class Day7
         // Assert
         cmd.Cmd.Should().Be(expected.Cmd);
         cmd.Args.Should().Be(expected.Args);
-    }
-
-
-
-    public string Execute2(string filename)
-    {
-        var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\07\\{filename}");
-
-        return "";
-    }
-
-
-    [Theory(Skip = "Skipping")]
-    [InlineData("Example.txt", "")]
-    [InlineData("Input01.txt", "")]
-    public void Run2(string file, string answer)
-    {
-        // Arrange
-
-        // Act
-        var result = Execute2(file);
-
-        // Assert
-        result.Should().Be(answer);
     }
 }
