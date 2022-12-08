@@ -4,24 +4,23 @@ namespace AdventOfCode.Tests._08;
 
 public class Day8
 {
-    public string Execute(string filename)
+    public int Execute(string filename)
     {
         var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\08\\{filename}");
 
-        return "";
-    }
+        // parse input into grid
 
-    public string Execute2(string filename)
-    {
-        var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\08\\{filename}");
 
-        return "";
+        // recurse
+
+
+        return 0;
     }
 
     [Theory]
-    [InlineData("Example.txt", "")]
-    [InlineData("Input01.txt", "")]
-    public void Run(string file, string answer)
+    [InlineData("Example.txt", 21)]
+    //[InlineData("Input01.txt", "")]
+    public void Run(string file, int answer)
     {
         // Arrange
 
@@ -32,17 +31,24 @@ public class Day8
         result.Should().Be(answer);
     }
 
-    [Theory]
-    [InlineData("Example.txt", "")]
-    [InlineData("Input01.txt", "")]
-    public void Run2(string file, string answer)
+    public string Execute2(string filename)
     {
-        // Arrange
+        var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\08\\{filename}");
 
-        // Act
-        var result = Execute2(file);
-
-        // Assert
-        result.Should().Be(answer);
+        return "";
     }
+
+    //[Theory]
+    //[InlineData("Example.txt", "")]
+    //[InlineData("Input01.txt", "")]
+    //public void Run2(string file, string answer)
+    //{
+    //    // Arrange
+
+    //    // Act
+    //    var result = Execute2(file);
+
+    //    // Assert
+    //    result.Should().Be(answer);
+    //}
 }
