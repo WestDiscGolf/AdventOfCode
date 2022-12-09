@@ -453,7 +453,7 @@ public class Day8
         result.Should().Be(answer);
     }
 
-    [Theory]
+    [Theory(Skip = "Part 2 is WIP")]
     [InlineData("Example.txt", 8)]
     //[InlineData("Input01.txt", "")]
     public void Run2(string file, int answer)
