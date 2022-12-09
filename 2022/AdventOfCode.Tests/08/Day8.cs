@@ -245,8 +245,199 @@ public class Day8
 
         return count;
     }
-    
-    
+
+    public int Execute2(string filename)
+    {
+        var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\08\\{filename}");
+
+        var forest = new Forest();
+        forest.Load(raw.SplitOnNewLine());
+
+        int maxScore = 0;
+
+        // now the grid is loaded, what do we need to do?
+        foreach (var tree in forest)
+        {
+            List<int> scenicScore = new();
+
+            var surroundingValues = forest.GetTreeHeights(tree);
+
+            if (surroundingValues.Length < 4)
+            {
+                // if they don't have 4 surrounding values then it's on the edge
+            }
+            else
+            {
+                // now we need to look at each of the internal trees
+                // up
+                int y = tree.Y;
+                int altY = 1;
+
+                int treeCount = 0;
+
+                while (y >= 0)
+                {
+                    if (forest.TryGetValue(tree with { Y = tree.Y - altY }, out int height))
+                    {
+                        // if we're lower then move to the next tree
+                        if (height < tree.Height)
+                        {
+                            // continue
+                            treeCount++;
+                            y--;
+                            altY++; // increase alt y so we move up the board
+                        }
+                        // if equal height it needs to stop
+
+                        else if (height == tree.Height)
+                        {
+                            treeCount++;
+                            //break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // we've reached the outside world and need to count the tree
+                        break;
+                    }
+                }
+
+                scenicScore.Add(treeCount);
+                treeCount = 0;
+
+                // go down
+                y = tree.Y;
+                altY = 1;
+                while (y <= forest.ColumnCount)
+                {
+                    if (forest.TryGetValue(tree with { Y = tree.Y + altY }, out int height))
+                    {
+                        // if we're lower then move to the next tree
+                        if (height < tree.Height)
+                        {
+                            // continue
+                            treeCount++;
+                            y++;
+                            altY++; // increase alt y so we move up the board
+                        }
+
+                        // if equal height it needs to stop
+
+                        else if (height == tree.Height)
+                        {
+                            treeCount++;
+                            //break;
+                        }
+
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // we've reached the outside world and need to count the tree
+                        break;
+                    }
+                }
+
+                scenicScore.Add(treeCount);
+                treeCount = 0;
+
+                // go left
+                int x = tree.X;
+                int altX = 1;
+
+                while (x >= 0)
+                {
+                    if (forest.TryGetValue(tree with { X = tree.X - altX }, out int height))
+                    {
+                        // if we're lower then move to the next tree
+                        if (height < tree.Height)
+                        {
+                            // continue
+                            treeCount++;
+                            x--;
+                            altX++; // increase alt x so we move up the board
+                        }
+                        // if equal height it needs to stop
+
+                        else if (height == tree.Height)
+                        {
+                            treeCount++;
+                            //break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // we've reached the outside world and need to count the tree
+                        break;
+                    }
+                }
+
+                scenicScore.Add(treeCount);
+                treeCount = 0;
+
+                // go right
+                x = tree.X;
+                altX = 1;
+                while (x <= forest.RowCount)
+                {
+                    if (forest.TryGetValue(tree with { X = tree.X + altX }, out int height))
+                    {
+                        // if we're lower then move to the next tree
+                        if (height < tree.Height)
+                        {
+                            // continue
+                            treeCount++;
+                            x++;
+                            altX++; // increase alt y so we move up the board
+                        }
+                        // if equal height it needs to stop
+
+                        else if (height == tree.Height)
+                        {
+                            treeCount++;
+                            //break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // we've reached the outside world and need to count the tree
+                        break;
+                    }
+                }
+
+                scenicScore.Add(treeCount);
+            }
+
+            // process checking scenic
+            int i = 1;
+            foreach (var i1 in scenicScore)
+            {
+                i *= i1;
+            }
+
+            if (i > maxScore)
+            {
+                maxScore = i;
+            }
+        }
+
+        return maxScore;
+    }
 
     [Theory]
     [InlineData("Example.txt", 21)]
@@ -262,24 +453,17 @@ public class Day8
         result.Should().Be(answer);
     }
 
-    public string Execute2(string filename)
-    {
-        var raw = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\08\\{filename}");
-
-        return "";
-    }
-
-    //[Theory]
-    //[InlineData("Example.txt", "")]
+    [Theory]
+    [InlineData("Example.txt", 8)]
     //[InlineData("Input01.txt", "")]
-    //public void Run2(string file, string answer)
-    //{
-    //    // Arrange
+    public void Run2(string file, int answer)
+    {
+        // Arrange
 
-    //    // Act
-    //    var result = Execute2(file);
+        // Act
+        var result = Execute2(file);
 
-    //    // Assert
-    //    result.Should().Be(answer);
-    //}
+        // Assert
+        result.Should().Be(answer);
+    }
 }
