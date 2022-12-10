@@ -2,7 +2,13 @@
 
 namespace AdventOfCode.Tests._10;
 
-public record Instruction(int Cycles, int Action);
+public record Instruction(Command Cmd, int Action);
+
+public enum Command
+{
+    Noop,
+    Addx
+};
 
 public class Day10
 {
@@ -15,22 +21,54 @@ public class Day10
         {
             return x.SplitBySpace()[0] switch
             {
-                "addx" => new Instruction(2, int.Parse(x.SplitBySpace()[1])),
-                _ => new Instruction(1, 0)
+                "addx" => new Instruction(Command.Addx, int.Parse(x.SplitBySpace()[1])),
+                _ => new Instruction(Command.Noop, 0)
             };
         });
 
-        // number of cycles
-        var cycles = instructions.Select(x => x.Action).Sum();
+        Dictionary<int, int> steps = new();
+        int currentStep = 1;
 
-        // starting value
-        var result = 1;
+        int registerX = 1;
 
+        steps[currentStep] = registerX;
 
+        foreach (var cmd in instructions)
+        {
+            switch (cmd.Cmd)
+            {
+                case Command.Noop:
+                    steps[currentStep + 1] = registerX;
+                    currentStep++;
+                    break;
 
+                case Command.Addx:
 
-        return 0;
+                    // keep the current register value
+                    var temp = registerX;
+
+                    // calculate the new value
+                    registerX += cmd.Action;
+                    
+                    steps[currentStep + 1] = temp;
+                    steps[currentStep + 2] = registerX;
+
+                    currentStep += 2;
+                    break;
+            }
+        }
+
+        var total = GetValue(steps, 20)
+                    + GetValue(steps, 60)
+                    + GetValue(steps, 100)
+                    + GetValue(steps, 140)
+                    + GetValue(steps, 180)
+                    + GetValue(steps, 220);
+        
+        return total;
     }
+
+    public int GetValue(Dictionary<int, int> steps, int cycle) => steps[cycle] * cycle;
 
     public int Execute2(string filename)
     {
@@ -41,8 +79,9 @@ public class Day10
     }
 
     [Theory]
-    [InlineData("Example.txt", 21)]
-    [InlineData("Input01.txt", 1684)]
+    //[InlineData("Sample.txt", -1)]
+    //[InlineData("Example.txt", 13140)]
+    [InlineData("Input01.txt", 15680)]
     public void Run(string file, int answer)
     {
         // Arrange
